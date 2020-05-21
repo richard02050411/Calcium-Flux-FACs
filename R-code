@@ -1,0 +1,16 @@
+file_names <- list.files(path='./inputs')
+for (i in 1:length(file_names))
+{
+name_input <- paste('./inputs/',file_names[i], sep='')
+raw <- read.csv(file = name_input, header = TRUE)
+raw1 <- data.frame(raw[,1],raw[,2],abs(raw[,1])/(abs(raw[,2])+10),raw[,3])
+names(raw1)<- c('Indo1', 'Indo2', 'Ca', 'Time')
+raw1[,4] <- round(raw1[,4],0)
+aggmean <- aggregate(raw1, by=list(raw1$Time), FUN=mean)
+aggsd <- aggregate(raw1, by=list(raw1$Time), FUN=sd)
+aggcount <- aggregate(raw1, by=list(raw1$Time), FUN=length)
+agg <- data.frame(aggmean[,5],aggmean[,4],aggsd[,4],aggcount[,3])
+names(agg) = c('Time','Ca Mean','Ca SD','n')
+name_output <- paste('./outputs/outputs_',file_names[i],sep ='')
+write.csv(agg, file = name_output)
+}
